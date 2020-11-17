@@ -1,0 +1,44 @@
+
+citizen number=0
+fps=Bart Homer Simpson
+street=Park Lein street
+House number=742
+flat number=1
+sex=male
+age=10
+
+citizen number=1
+fps=Daniel Joseph Donegan
+street=Lenina street
+House number=66
+flat number=45
+sex=male
+age=52
+
+citizen number=2
+fps=David Michael Draiman
+street=Hollywood street
+House number=33
+flat number=12
+sex=male
+age=47
+
+citizen number=3
+fps=John Robert Moyer
+street=World's street
+House number=11
+flat number=14
+sex=male
+age=46
+
+citizen number=4
+fps=Mike Unknown Wengren
+street=Gaidara street
+House number=12
+flat number=34
+sex=male
+age=49
+
+school guys :
+Bart Homer Simpson
+10
