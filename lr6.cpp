@@ -24,95 +24,272 @@ ostream& operator<<(ostream& out, const vector<citizen>& live)
 {
     for (auto& element : live) {
 
-        out << " \nfps of a citizen : " << element.fps ;
-        out << " \nstreet living : " << element.d.street  ;
-        out << " \nhouse number :" << element.d.house_number ;
-        out << " \nflat number :" << element.d.flat_number;
-        out << " \ngender :" << element.sex;
-        out << " \nage :" << element.age << endl;
+        out  << element.fps << '\n';
+        out << element.d.street << '\n';
+        out <<  element.d.house_number << '\n';
+        out << element.d.flat_number << '\n';
+        out <<  element.sex << '\n';
+        out <<  element.age << '\n';
     }
     return out;
 }
 
- 
+istream& operator>>(istream& in, address& value)  // я так и не понял зачем мне это, написал, потому что в правках указано, что нужно перегрузить >>
+{
+    in >> value.street >> value.house_number >> value.flat_number;
+    return in;
+}
 
+istream& operator>>(istream& in, citizen& value)
+{
+    in >> value.fps >> value.d >> value.sex >> value.age;
+    return in;
+}
+
+ bool operator<(const citizen& c1, const citizen& c2)
+{
+    if (c1.fps < c2.fps)
+        return true;
+    if (c1.fps > c2.fps)
+        return false;
+    if (c1.sex < c2.sex)
+        return true;
+    if (c1.sex > c2.sex)
+        return false;
+    if (c1.age < c2.age)
+        return true;
+    if (c1.age > c2.age)
+        return false;
+    return false;
+}
+ bool operator<(const address& a1, const address& a2)
+ {
+     if (a1.street < a2.street)
+         return true;
+     if (a1.street > a2.street)
+         return false;
+     if (a1.house_number < a2.house_number)
+         return true;
+     if (a1.house_number > a2.house_number)
+         return false;
+     if (a1.flat_number < a2.flat_number)
+         return true;
+     if (a1.flat_number > a2.flat_number)
+         return false;
+     return false;
+ }
+
+ bool operator>(const citizen& c1, const citizen& c2)
+ {
+     if (c1.fps < c2.fps)
+         return false;
+     if (c1.fps > c2.fps)
+         return true;
+     if (c1.sex < c2.sex)
+         return false;
+     if (c1.sex > c2.sex)
+         return true;
+     if (c1.age < c2.age)
+         return false;
+     if (c1.age > c2.age)
+         return true;
+     return true;
+ }
+ bool operator>(const address& a1, const address& a2)
+ {
+     if (a1.street < a2.street)
+         return false;
+     if (a1.street > a2.street)
+         return true;
+     if (a1.house_number < a2.house_number)
+         return false;
+     if (a1.house_number > a2.house_number)
+         return true;
+     if (a1.flat_number < a2.flat_number)
+         return false;
+     if (a1.flat_number > a2.flat_number)
+         return true;
+     return true;
+ }
 
 void sort(vector<citizen>& arr, int n)
 {
-    citizen t;
-    for (int i = 0; i < n - 1; i++)
-        for (int j = i + 1; j < n; j++) {
-            const char* d1 = arr[i].fps.c_str();
-            const char* d2 = arr[j].fps.c_str();
-            if (strcmp(d1, d2) > 0)
-            {
-                t = arr[i];
-                arr[i] = arr[j];
-                arr[j] = t;
+    
+    int start = 0;
+    int finish = arr.size() - 1;
+
+    while (start < finish) {
+        for (int i = 0; i < finish; i++) {
+            if (arr[i] > arr[i + 1]) {
+                swap(arr[i], (arr)[i + 1]);
             }
         }
+        start++;
+        for (int i = finish - 1; i > start; i--) {
+            if ((arr)[i] < (arr)[i - 1]) {
+                swap((arr)[i], (arr)[i - 1]);
+            }
+        }
+        finish--;
+    }
 }
-void pupil(ostream& out, vector <citizen> live , int hmp , string fps) {
-    
-        out << "Pupils in the town: " << hmp << endl;
-        out << "name of the pupil : " << fps;
-    
-}
-int main()
-{  
-    int hmp = 0;
-	vector <citizen> human (5) ;
 
-    human[0] = { "David Michael Draiman" , "Hollywood street", 33, 12, "male", 47 };
-    human[1] = { "Daniel Joseph Donegan", "Lenina street",66 ,45 , "male", 52};
-    human[2] = { "John Robert Moyer", "World's street", 11, 14 , "male", 46};
-    human[3] = { "Mike Unknown Wengren", "Gaidara street", 12, 34 , "male", 49};
-    human[4] = {"Bart Homer Simpson", "Park Lein street", 742, 1 , "male", 10};
+
+
+void pupil(vector <citizen> human) {
+    string str;
+    cout << "enter street : ";
+    getline(cin, str);
+    for (citizen hum : human) {
+        if ((str == hum.d.street) && (hum.age >= 7 && hum.age <= 18)) {
+            cout << hum.fps;
+            break;
+        }
+        else {
+            cout << "wrong street or pupil was not found";
+            break;
+        }
+    }
+     
+}
+void write(vector<citizen> human, string file)
+{
+    ofstream file_w;
+    file_w.open(file, ios::out);
+    file_w << human;
+    file_w.close();
+}
+void read_Bin(vector<citizen>& human, string file)
+{
+    ifstream infile(file, ios::binary);
+    if (!infile.is_open())
+    {
+        cout << "error file oppening" << endl;
+       
+    }
+    else {
+        citizen cit;
+        while (!infile.eof())
+        {
+            int s;
+            infile.read(reinterpret_cast<char*>(&s), sizeof(s));
+            cit.fps.resize(s);
+            infile.read(cit.fps.data(), s);
+            infile.read(reinterpret_cast<char*>(&s), sizeof(s));
+            cit.d.street.resize(s);
+            infile.read(cit.d.street.data(), s);
+            infile.read(reinterpret_cast<char*>(&cit.d.flat_number), sizeof(cit.d.flat_number));
+            infile.read(reinterpret_cast<char*>(&cit.d.house_number), sizeof(cit.d.house_number));
+            infile.read(reinterpret_cast<char*>(&s), sizeof(s));
+            cit.sex.resize(s);
+            infile.read(cit.sex.data(), s);
+            infile.read(reinterpret_cast<char*>(&cit.age), sizeof(cit.age));
+            if (infile.eof()) break;
+            human.push_back(cit);
+        }
+        infile.close();
+    }
+}
+
+void write_Bin(vector<citizen>& human, string file)
+{
+    ofstream of_file(file, ios::binary);
+    if (!of_file.is_open())
+    {
+       cout << "error file oppening" << endl;
+        
+    }
+    else {
+        for (citizen cit : human)
+        {
+            int s = cit.fps.size();
+            of_file.write(reinterpret_cast<char*>(&s), sizeof(s));
+            of_file.write(cit.fps.c_str(), s);
+            s = cit.d.street.size();
+            of_file.write(reinterpret_cast<char*>(&s), sizeof(s));
+            of_file.write(cit.d.street.c_str(), s);
+            of_file.write(reinterpret_cast<char*>(&cit.d.flat_number), sizeof(cit.d.flat_number));
+            of_file.write(reinterpret_cast<char*>(&cit.d.house_number), sizeof(cit.d.house_number));
+            s = cit.sex.size();
+            of_file.write(reinterpret_cast<char*>(&s), sizeof(s));
+            of_file.write(cit.sex.c_str(), s);
+            of_file.write(reinterpret_cast<char*>(&cit.age), sizeof(cit.age));
+        }
+    }
+}
+
+int main(int argc, char* argv[])
+{  
+  
+    ///////////////////////////////////////////////////////
+    
+    string output_file = argv[1];   
+
+    string output_file2 = argv[2];     //// files 
+
+    /////////////////////////////////////////////////////
+
+    int hmp = 0;
+	vector <citizen> human;
+    citizen david;
+    david.fps = "David Michael Draiman";
+    david.d.street = "Hollywood street";
+    david.d.house_number = 666;
+    david.d.flat_number = 65;
+    david.sex = "male";
+    david.age = 47;
+    /////////////////////
+    citizen dan;
+    dan.fps = "Daniel Joseph Donegan ";
+    dan.d.street = "world`s street";
+    dan.d.house_number = 123;
+    dan.d.flat_number = 321;
+    dan.sex = "male";
+    dan.age = 53;
+    ////////////////////
+    citizen mike;
+    mike.fps = "Mike Unknown Wengern";
+    mike.d.street = "privet drive";
+    mike.d.house_number = 56;
+    mike.d.flat_number = 1;
+    mike.sex = "male";
+    mike.age = 49;
+    /////////////////////
+    citizen john;
+    john.fps = "John Robert Moyer";
+    john.d.street = "Lenina street";
+    john.d.house_number = 7;
+    john.d.flat_number = 97;
+    john.sex = "male";
+    john.age = 47;
+    ///////////////////////
+    citizen bart;
+    bart.fps = "Bart Homer Simpson";
+    bart.d.street = "Park Lein Street";
+    bart.d.house_number = 742;
+    bart.d.flat_number = 1;
+    bart.sex = "male";
+    bart.age = 10;
+    //////////////////////
+    human.push_back(david);
+    human.push_back(mike);
+    human.push_back(dan);
+    human.push_back(john);
+    human.push_back(bart);
+    ////////////////////////
+
     sort (human,5);
 
-    for (int i = 0; i <= 4; i++) {
-        if (human[i].age >= 7 && human[i].age <= 18) {
-            hmp++;          
-        }
-    }
-    
-    ofstream l6("l6.txt", ios::out); 
-        l6 << human;
+    write(human, output_file);
 
-        for (int b = 0; b < 4; b ++) {
-            if (human[b].age >= 7 && human[b].age <= 18) {
-                pupil(l6, human, hmp, human[b].fps);
-            }
-        }
-    l6.close();
+    write_Bin(human, output_file2);
+    human.clear();
+     read_Bin(human, output_file2);
+     cout << human;
+  
+     pupil(human);
 
 
-
-    ofstream bin("lab_6.txt", ios::binary);
-    for (auto i : human)
-    {
-        bin.write(reinterpret_cast<char*>(&i.fps), sizeof(i.fps));
-        bin.write(reinterpret_cast<char*>(&i.d.street), sizeof(i.d.street));
-        bin.write(reinterpret_cast<char*>(&i.d.house_number), sizeof(i.d.house_number));
-        bin.write(reinterpret_cast<char*>(&i.d.flat_number), sizeof(i.d.flat_number));
-        bin.write(reinterpret_cast<char*>(&i.sex), sizeof(i.sex));
-        bin.write(reinterpret_cast<char*>(&i.age), sizeof(i.age));
-    }
-    bin.close();
-    
-    ifstream bin_in("lab_6.txt",ios::binary);
-    for (auto i : human)
-    {
-        getline(bin_in, i.fps);
-        getline(bin_in, i.d.street);
-        bin_in.read(reinterpret_cast<char*>(&i.d.house_number), sizeof(i.d.house_number));
-        bin_in.read(reinterpret_cast<char*>(&i.d.flat_number), sizeof(i.d.flat_number));
-        getline(bin_in, i.sex);
-        bin_in.read(reinterpret_cast<char*>(&i.age), sizeof(i.age));
-    }
-    bin_in.close();
-    
-   
     return 0;
 }
 
