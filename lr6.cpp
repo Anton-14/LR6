@@ -34,15 +34,23 @@ ostream& operator<<(ostream& out, const vector<citizen>& live)
     return out;
 }
 
-istream& operator>>(istream& in, address& value)  // я так и не понял зачем мне это, написал, потому что в правках указано, что нужно перегрузить >>
-{
-    in >> value.street >> value.house_number >> value.flat_number;
+istream& operator>>(istream& in, address& human) {
+
+    in >> human.street >> human.house_number >> human.flat_number;
     return in;
 }
 
-istream& operator>>(istream& in, citizen& value)
+istream& operator>>(istream& in, vector <citizen>& human)  // я так и не понял зачем мне это, написал, потому что в правках указано, что нужно перегрузить >>
+
 {
-    in >> value.fps >> value.d >> value.sex >> value.age;
+    for (citizen& human : human) {
+        getline(in, human.fps);
+        getline(in, human.d.street);
+        in >> human.d.house_number;
+        in >> human.d.flat_number;
+        getline(in , human.sex);
+        in >> human.age;
+    }
     return in;
 }
 
@@ -138,19 +146,26 @@ void sort(vector<citizen>& arr, int n)
 
 void pupil(vector <citizen> human) {
     string str;
+    string last;
+    int counter = 0;
     cout << "enter street : ";
     getline(cin, str);
+   
     for (citizen hum : human) {
+       last =  last += hum.d.street.back();
         if ((str == hum.d.street) && (hum.age >= 7 && hum.age <= 18)) {
-            cout << hum.fps;
-            break;
+            cout << hum.fps << endl;
+            counter++;
+           
+            
         }
-        else {
-            cout << "wrong street or pupil was not found";
-            break;
+         else if (str != last) {
+            cout << "";
+            
         }
+      
     }
-     
+    cout << counter << " pupils";
 }
 void write(vector<citizen> human, string file)
 {
@@ -257,11 +272,11 @@ int main(int argc, char* argv[])
     /////////////////////
     citizen john;
     john.fps = "John Robert Moyer";
-    john.d.street = "Lenina street";
+    john.d.street = "Park Lein Street";
     john.d.house_number = 7;
     john.d.flat_number = 97;
     john.sex = "male";
-    john.age = 47;
+    john.age = 11;
     ///////////////////////
     citizen bart;
     bart.fps = "Bart Homer Simpson";
