@@ -248,7 +248,7 @@ int main(int argc, char* argv[])
     /////////////////////////////////////////////////////
 
     int hmp = 0;
-	vector <citizen> human;
+	vector <citizen> human[5];
     citizen david;
     david.fps = "David Michael Draiman";
     david.d.street = "Hollywood street";
