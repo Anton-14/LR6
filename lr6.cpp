@@ -40,9 +40,12 @@ istream& operator>>(istream& in, address& human) {
     return in;
 }
 
-istream& operator>>(istream& in, vector <citizen>& human)  // я так и не понял зачем мне это, написал, потому что в правках указано, что нужно перегрузить >>
-
+istream& operator>>(istream& in, vector <citizen>& human) 
 {
+    string str;
+    getline(cin, str);
+    int i = stoi(str);
+    human.resize(i);
     for (citizen& human : human) {
         getline(in, human.fps);
         getline(in, human.d.street);
